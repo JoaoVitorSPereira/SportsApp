@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import styled from 'styled-components/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   StyleSheet,
   ImageBackground,
@@ -7,58 +7,18 @@ import {
   TouchableOpacity,
   Text,
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import isLoggedIn from '../hooks/isLoggedIn';
+import {
+  ButtonText,
+  Container,
+  Form,
+  Header,
+  Label,
+  PrimaryButton,
+  SecondaryButton,
+} from '../styles/StyledRegister';
 
 const bgImage = require('../assets/background.jpg');
-
-const Container = styled.View`
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-`;
-
-const Header = styled.Text`
-  font-weight: bold;
-  color: #f04a5b;
-  font-size: 32px;
-  margin-bottom: 8px;
-`;
-
-const Form = styled.View`
-  align-self: stretch;
-  padding-left: 30px;
-  padding-right: 30px;
-  margin-top: 30px;
-`;
-
-const Label = styled.Text`
-  font-size: 16px;
-  color: #fff;
-  font-weight: bold;
-`;
-
-const PrimaryButton = styled.TouchableOpacity`
-  height: 42px;
-  background-color: #007bff;
-  justify-content: center;
-  align-items: center;
-  border-radius: 4px;
-  margin-top: 20px;
-`;
-
-const SecondaryButton = styled.TouchableOpacity`
-  height: 42px;
-  background-color: #f04a5b;
-  justify-content: center;
-  align-items: center;
-  border-radius: 4px;
-  margin-top: 20px;
-`;
-
-const ButtonText = styled.Text`
-  color: #fff;
-`;
 
 const styles = StyleSheet.create({
   image: {
@@ -83,7 +43,7 @@ const styles = StyleSheet.create({
 });
 
 const Register = ({ navigation }) => {
-  const [user, user_id] = isLoggedIn();
+  const [user, user_id] = isLoggedIn({ navigation });
   const [firstName, setName] = useState(null);
   const [lastName, setLastName] = useState(null);
   const [email, setEmail] = useState(null);
@@ -94,11 +54,14 @@ const Register = ({ navigation }) => {
   });
   const submitHandler = async () => {
     try {
-      const response = await fetch('http://localhost:8080/api/user/register', {
-        method: 'POST',
-        body: JSON.stringify({ firstName, lastName, email, password }),
-        headers: { 'Content-Type': 'application/json' },
-      });
+      const response = await fetch(
+        'http://192.168.0.7:8080/api/user/register',
+        {
+          method: 'POST',
+          body: JSON.stringify({ firstName, lastName, email, password }),
+          headers: { 'Content-Type': 'application/json' },
+        },
+      );
 
       const { user, user_id } = await response.json();
 
@@ -108,7 +71,7 @@ const Register = ({ navigation }) => {
         navigation.navigate('Dashboard');
       }
     } catch (error) {
-      console.log('🧐 error on Register.');
+      console.log('🧐 error on Register.'.error);
     }
   };
 

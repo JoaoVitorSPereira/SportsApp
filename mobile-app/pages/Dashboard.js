@@ -1,98 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import styled from 'styled-components/native';
 import { StyleSheet, ImageBackground, Image } from 'react-native';
 import ActionButton from 'react-native-action-button';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {
-  IonIcons,
-  FontAwesome5,
-  MaterialCommunityIcons,
-} from '@expo/vector-icons';
+import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
+import Icon from 'react-native-vector-icons/Ionicons';
+import ModalComponent from '../components/ModalComponent';
 import isLoggedIn from '../hooks/isLoggedIn';
-
+import {
+  ButtonText,
+  Container,
+  Header,
+  PrimaryButton,
+  BoldText,
+  Box,
+  BoxDescription,
+  BoxPrice,
+  BoxSport,
+  BoxText,
+  Flat,
+  RegisterButton,
+} from '../styles/StyledDashboard';
 const bgImage = require('../assets/background.jpg');
-
-const Container = styled.SafeAreaView`
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-`;
-
-const Header = styled.Text`
-  font-weight: bold;
-  color: #f04a5b;
-  font-size: 32px;
-  margin-bottom: 8px;
-`;
-
-const Flat = styled.FlatList`
-  padding-right: 20px;
-  padding-left: 20px;
-  width: 100%;
-`;
-
-const Box = styled.View`
-  background-color: #fff;
-  opacity: 0.9;
-  margin-top: 8px;
-  margin-bottom: 8px;
-  padding: 8px;
-`;
-
-const BoxText = styled.Text`
-  font-size: 20px;
-  margin-bottom: 8px;
-  font-weight: bold;
-  color: #444;
-`;
-
-const BoxSport = styled.Text`
-  font-size: 16px;
-  color: #444;
-`;
-
-const BoxDescription = styled.Text`
-  font-size: 16px;
-  color: #444;
-`;
-
-const BoxPrice = styled.Text`
-  color: #999;
-  margin-top: 5px;
-  margin-bottom: 5px;
-  font-size: 15px;
-  font-weight: bold;
-`;
-
-const RegisterButton = styled.TouchableOpacity`
-  height: 42px;
-  background-color: green;
-  justify-content: center;
-  align-items: center;
-  border-radius: 4px;
-  margin-top: 20px;
-  align-self: stretch;
-`;
-
-const PrimaryButton = styled.TouchableOpacity`
-  height: 42px;
-  background-color: red;
-  justify-content: center;
-  align-items: center;
-  border-radius: 4px;
-  margin-top: 20px;
-  align-self: stretch;
-`;
-
-const BoldText = styled.Text`
-  font-weight: bold;
-  color: #000;
-  font-size: 14px;
-`;
-
-const ButtonText = styled.Text`
-  color: #fff;
-`;
 
 const styles = StyleSheet.create({
   image: {
@@ -116,7 +44,7 @@ const styles = StyleSheet.create({
 
 const Dashboard = ({ navigation }) => {
   const [user, user_id] = isLoggedIn({ navigation });
-  const [modalIsVisible, setModalIsVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
   const [events, setEvents] = useState([
     {
       _id: 'idblah',
@@ -161,7 +89,6 @@ const Dashboard = ({ navigation }) => {
           showHorizontalScrollIndicator={true}
           keyExtractor={event => event._id}
           renderItem={({ item }) => {
-            console.log(item);
             return (
               <Box>
                 <Image
@@ -187,7 +114,11 @@ const Dashboard = ({ navigation }) => {
             );
           }}
         />
-        {modalIsVisible ? <BoldText>Is visible </BoldText> : null}
+        <ModalComponent
+          isVisible={modalVisible}
+          setVisible={setModalVisible}
+          user={user}
+        />
         <PrimaryButton onPress={logoutHandler}>
           <ButtonText>Logout</ButtonText>
         </PrimaryButton>
@@ -195,9 +126,9 @@ const Dashboard = ({ navigation }) => {
       <ActionButton buttonColor="#007bff" offsetX={4} offsetY={60}>
         <ActionButton.Item
           title="New Event"
-          onPress={() => setModalIsVisible(true)}
+          onPress={() => setModalVisible(true)}
         >
-          <IonIcons name="ios-create" style={styles.actionButton} />
+          <Icon name="ios-create" style={styles.actionButton} />
         </ActionButton.Item>
       </ActionButton>
     </Container>

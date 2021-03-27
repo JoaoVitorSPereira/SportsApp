@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import styled from 'styled-components/native';
 import {
   TouchableOpacity,
   ImageBackground,
@@ -8,56 +7,17 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import isLoggedIn from '../hooks/isLoggedIn';
+import {
+  SecondaryButton,
+  PrimaryButton,
+  Label,
+  Header,
+  Form,
+  Container,
+  ButtonText,
+} from '../styles/StyledLogin';
 
 const bgImage = require('../assets/background.jpg');
-
-const Container = styled.View`
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-`;
-
-const Header = styled.Text`
-  font-weight: bold;
-  color: #f04a5b;
-  font-size: 32px;
-  margin-bottom: 8px;
-`;
-
-const Form = styled.View`
-  align-self: stretch;
-  padding-left: 30px;
-  padding-right: 30px;
-  margin-top: 30px;
-`;
-
-const Label = styled.Text`
-  font-size: 16px;
-  color: #fff;
-  font-weight: bold;
-`;
-
-const PrimaryButton = styled.TouchableOpacity`
-  height: 42px;
-  background-color: #007bff;
-  justify-content: center;
-  align-items: center;
-  border-radius: 4px;
-  margin-top: 20px;
-`;
-
-const SecondaryButton = styled.TouchableOpacity`
-  height: 42px;
-  background-color: #f04a5b;
-  justify-content: center;
-  align-items: center;
-  border-radius: 4px;
-  margin-top: 20px;
-`;
-
-const ButtonText = styled.Text`
-  color: #fff;
-`;
 
 const styles = StyleSheet.create({
   image: {
@@ -82,16 +42,12 @@ const styles = StyleSheet.create({
 });
 
 const Login = ({ navigation }) => {
-  const [user, user_id] = isLoggedIn();
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
 
-  useEffect(() => {
-    if (user !== null && user_id !== null) navigation.navigate('Dashboard');
-  });
   const submitHandler = async () => {
     try {
-      const response = await fetch('http://localhost:8080/api/login', {
+      const response = await fetch('http://192.168.0.7:8080/api/login', {
         method: 'POST',
         body: JSON.stringify({ email, password }),
         headers: { 'Content-Type': 'application/json' },
@@ -105,9 +61,9 @@ const Login = ({ navigation }) => {
         navigation.navigate('Dashboard');
       }
 
-      console.log('😊 SUBMITED', responseJson);
+      console.log('😊 SUBMITED', user_id);
     } catch (error) {
-      console.log('🧐 error on Register.');
+      console.log('🧐 error on Register.', error);
     }
   };
 
