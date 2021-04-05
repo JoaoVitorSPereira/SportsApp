@@ -1,40 +1,52 @@
 import React, { useState } from 'react';
-import styled from 'styled-components/native';
 import {
   Alert,
   Modal,
   StyleSheet,
-  Text,
-  TouchableOpacity,
+  TextInput,
+  Image,
   View,
-  Dimensions,
+  TouchableOpacity,
 } from 'react-native';
-
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
-
-const Container = styled.SafeAreaView`
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-`;
-
-const PrimaryButton = styled.TouchableOpacity`
-  height: 42px;
-  background-color: red;
-  justify-content: center;
-  align-items: center;
-  border-radius: 4px;
-  margin-top: 20px;
-  align-self: stretch;
-`;
-const ButtonText = styled.Text`
-  color: #fff;
-`;
+import { Picker } from '@react-native-picker/picker';
+import * as ImagePicker from 'expo-image-picker';
+import { MaterialIcons } from '@expo/vector-icons';
+import {
+  ButtonText,
+  Container,
+  Form,
+  Label,
+  PrimaryButton,
+  AddImage,
+  SecondaryButton,
+  ModalView,
+} from '../styles/ModalComponent';
 
 const ModalComponent = ({ isVisible, setVisible, user }) => {
+  const [eventTitle, setEventTitle] = useState(null);
+  const [eventDescription, setEventDescription] = useState(null);
+  const [eventPrice, setEventPrice] = useState(null);
+  const [eventSport, setEventSport] = useState(null);
+  const [eventDate, setEventDate] = useState(null);
+  const [image, setImage] = useState(null);
+
+  const pickImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      setImage(result.uri);
+    }
+  };
+
   return (
-    <View style={styles.centeredView}>
+    <Container>
       <Modal
         animationType="slide"
         transparent={true}
@@ -44,63 +56,85 @@ const ModalComponent = ({ isVisible, setVisible, user }) => {
           setVisible(!isVisible);
         }}
       >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>Hello World!</Text>
-            <TouchableOpacity
-              style={[styles.button, styles.buttonClose]}
-              onPress={() => setVisible(!isVisible)}
-            >
-              <Text style={styles.textStyle}>Hide Modal</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+        <Container>
+          <ModalView>
+            <Form>
+              <View>
+                {image ? (
+                  <TouchableOpacity onPress={pickImage}>
+                    <Image
+                      source={{ uri: image }}
+                      style={{ width: '100%', height: 150, marginBottom: 20 }}
+                    />
+                  </TouchableOpacity>
+                ) : (
+                  <AddImage onPress={pickImage}>
+                    <MaterialIcons name="add-a-photo" size={56} color="black" />
+                  </AddImage>
+                )}
+                <Label>Event Title:</Label>
+                <TextInput
+                  style={styles.input}
+                  placeholder={'Event Title'}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  value={eventTitle}
+                  onChangeText={text => console.log(text)}
+                />
+                <Label>Event Description:</Label>
+                <TextInput
+                  style={styles.input}
+                  placeholder={'Event Description'}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  value={eventDescription}
+                  onChangeText={text => console.log(text)}
+                />
+                <Label>Event Price:</Label>
+                <TextInput
+                  style={styles.input}
+                  placeholder={'Price in $00,00'}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  value={eventPrice}
+                  onChangeText={text => console.log(text)}
+                />
+              </View>
+              <Label>Sport: {eventSport}</Label>
+              <Picker
+                selectedValue={eventSport}
+                onValueChange={value => setEventSport(value)}
+              >
+                <Picker.Item label={'Running'} value={'Running'} />
+                <Picker.Item label={'Cycling'} value={'Cycling'} />
+                <Picker.Item label={'Swimming'} value={'Swimming'} />
+              </Picker>
+              <PrimaryButton onPress={() => setVisible(!isVisible)}>
+                <ButtonText>Submit Event.</ButtonText>
+              </PrimaryButton>
+              <SecondaryButton onPress={() => setVisible(!isVisible)}>
+                <ButtonText>Close</ButtonText>
+              </SecondaryButton>
+            </Form>
+          </ModalView>
+        </Container>
       </Modal>
-    </View>
+    </Container>
   );
 };
 
 const styles = StyleSheet.create({
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 22,
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 35,
-    alignItems: 'center',
+  input: {
+    borderWidth: 1,
+    borderColor: '#007bff',
+    paddingHorizontal: 10,
+    fontSize: 16,
+    color: 'black',
+    fontWeight: '400',
+    height: 44,
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-  },
-  buttonOpen: {
-    backgroundColor: '#F194FF',
-  },
-  buttonClose: {
-    backgroundColor: '#2196F3',
-  },
-  textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: 'center',
+    marginBottom: 30,
+    borderRadius: 4,
   },
 });
 

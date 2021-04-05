@@ -8,7 +8,10 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 
-LogBox.ignoreLogs(['Warning: ...']);
+LogBox.ignoreLogs([
+  'Warning: ...',
+  'Animated: `useNativeDriver` was not specified.',
+]);
 LogBox.ignoreAllLogs();
 
 export default function App() {

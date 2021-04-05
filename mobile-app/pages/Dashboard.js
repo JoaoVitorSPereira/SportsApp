@@ -55,24 +55,6 @@ const Dashboard = ({ navigation }) => {
         'https://www.atribuna.com.br/image/contentid/policy:1.120307:1601137666/10-KM-da-Tribuna.jpg?f=default&$p$f=1ff3e9c&q=0.8&w=1500&$w=f075b93',
       sport: 'Running',
     },
-    {
-      _id: 'idbleh',
-      title: 'Santos 10km running',
-      description: 'Best 10k race in the world 🌍',
-      price: '50.00R$',
-      thumbnail_url:
-        'https://www.atribuna.com.br/image/contentid/policy:1.120307:1601137666/10-KM-da-Tribuna.jpg?f=default&$p$f=1ff3e9c&q=0.8&w=1500&$w=f075b93',
-      sport: 'Running',
-    },
-    {
-      _id: 'idblih',
-      title: 'Santos 10km running',
-      description: 'Best 10k race in the world 🌍',
-      price: '50.00R$',
-      thumbnail_url:
-        'https://www.atribuna.com.br/image/contentid/policy:1.120307:1601137666/10-KM-da-Tribuna.jpg?f=default&$p$f=1ff3e9c&q=0.8&w=1500&$w=f075b93',
-      sport: 'Running',
-    },
   ]);
   const logoutHandler = async () => {
     await AsyncStorage.removeItem('user');
