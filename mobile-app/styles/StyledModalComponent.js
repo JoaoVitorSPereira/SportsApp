@@ -22,6 +22,7 @@ export const PrimaryButton = styled.TouchableOpacity`
   align-items: center;
   border-radius: 4px;
   align-self: stretch;
+  margin-top: 150px;
 `;
 
 export const SecondaryButton = styled.TouchableOpacity`
