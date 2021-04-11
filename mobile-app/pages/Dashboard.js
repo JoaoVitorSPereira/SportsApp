@@ -45,17 +45,22 @@ const styles = StyleSheet.create({
 const Dashboard = ({ navigation }) => {
   const [user, user_id] = isLoggedIn({ navigation });
   const [modalVisible, setModalVisible] = useState(false);
-  const [events, setEvents] = useState([
-    {
-      _id: 'idblah',
-      title: 'Santos 10km running',
-      description: 'Best 10k race in the world 🌍',
-      price: '50.00R$',
-      thumbnail_url:
-        'https://www.atribuna.com.br/image/contentid/policy:1.120307:1601137666/10-KM-da-Tribuna.jpg?f=default&$p$f=1ff3e9c&q=0.8&w=1500&$w=f075b93',
-      sport: 'Running',
-    },
-  ]);
+  const [events, setEvents] = useState([]);
+
+  useEffect(() => {
+    loadEvents();
+  }, []);
+
+  const loadEvents = async () => {
+    const response = await fetch('http://192.168.0.7:8080/api/dashboard', {
+      method: 'GET',
+      headers: { user: user },
+    });
+
+    const jsonResponse = await response.json();
+    setEvents(jsonResponse.events);
+  };
+
   const logoutHandler = async () => {
     await AsyncStorage.removeItem('user');
     await AsyncStorage.removeItem('user_id');

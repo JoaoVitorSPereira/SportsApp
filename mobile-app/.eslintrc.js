@@ -16,6 +16,7 @@ module.exports = {
   },
   plugins: ['react', 'react-native', 'prettier'],
   rules: {
+    'no-useless-return': 'off',
     camelcase: 'off',
     'no-underscore-dangle': 'off',
     'no-console': 'off',

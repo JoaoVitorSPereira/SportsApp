@@ -37,9 +37,44 @@ const ModalComponent = ({ isVisible, setVisible, user }) => {
   const [image, setImage] = useState(null);
   const mode = 'date';
 
+  const submitEventHandler = async () => {
+    const localUri = image;
+    const filename = localUri.split('/').pop();
+    const match = /\.(\w+)$/.exec(filename);
+    const type = match ? `image/${match[1]}` : `image`;
+
+    const data = new FormData();
+    data.append('thumbnail', { uri: localUri, name: filename, type });
+    data.append('title', eventTitle);
+    data.append('description', eventDescription);
+    data.append('price', eventPrice);
+    data.append('date', eventDate);
+    data.append('sport', eventSport);
+
+    try {
+      await fetch('http://192.168.0.7:8080/api/event', {
+        method: 'POST',
+        body: data,
+        headers: { user },
+      });
+      cancelEventHandler();
+    } catch (error) {
+      console.log('data', data);
+    }
+  };
+
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || eventDate;
     setEventDate(currentDate);
+  };
+
+  const cancelEventHandler = () => {
+    setVisible(!isVisible);
+    setImage(null);
+    setEventTitle(null);
+    setEventDescription(null);
+    setEventDate(new Date());
+    setEventSport(null);
   };
 
   const pickImage = async () => {
@@ -98,7 +133,7 @@ const ModalComponent = ({ isVisible, setVisible, user }) => {
                     autoCapitalize="none"
                     autoCorrect={false}
                     value={eventTitle}
-                    onChangeText={text => console.log(text)}
+                    onChangeText={text => setEventTitle(text)}
                   />
                   <Label>Event Description:</Label>
                   <TextInput
@@ -107,7 +142,7 @@ const ModalComponent = ({ isVisible, setVisible, user }) => {
                     autoCapitalize="none"
                     autoCorrect={false}
                     value={eventDescription}
-                    onChangeText={text => console.log(text)}
+                    onChangeText={text => setEventDescription(text)}
                   />
                   <Label>Event Price:</Label>
                   <TextInput
@@ -116,7 +151,7 @@ const ModalComponent = ({ isVisible, setVisible, user }) => {
                     autoCapitalize="none"
                     autoCorrect={false}
                     value={eventPrice}
-                    onChangeText={text => console.log(text)}
+                    onChangeText={text => setEventPrice(text)}
                   />
                 </View>
                 <View>
@@ -139,10 +174,10 @@ const ModalComponent = ({ isVisible, setVisible, user }) => {
               </Form>
             </ModalView>
           </Container>
-          <PrimaryButton onPress={() => setVisible(!isVisible)}>
+          <PrimaryButton onPress={submitEventHandler}>
             <ButtonText>Submit Event.</ButtonText>
           </PrimaryButton>
-          <SecondaryButton onPress={() => setVisible(!isVisible)}>
+          <SecondaryButton onPress={cancelEventHandler}>
             <ButtonText>Close</ButtonText>
           </SecondaryButton>
         </ScrollView>
