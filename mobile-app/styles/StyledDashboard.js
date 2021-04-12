@@ -62,6 +62,15 @@ export const RegisterButton = styled.TouchableOpacity`
   align-self: stretch;
 `;
 
+export const DeleteButton = styled.TouchableOpacity`
+  height: 42px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+  margin-top: 20px;
+  align-self: stretch;
+`;
+
 export const PrimaryButton = styled.TouchableOpacity`
   height: 42px;
   background-color: red;

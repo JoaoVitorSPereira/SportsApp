@@ -28,7 +28,7 @@ import {
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-const ModalComponent = ({ isVisible, setVisible, user }) => {
+const ModalComponent = ({ isVisible, setVisible, user, loadEvents }) => {
   const [eventTitle, setEventTitle] = useState(null);
   const [eventDescription, setEventDescription] = useState(null);
   const [eventPrice, setEventPrice] = useState(null);
@@ -37,6 +37,21 @@ const ModalComponent = ({ isVisible, setVisible, user }) => {
   const [image, setImage] = useState(null);
   const mode = 'date';
 
+  const pickImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      setImage(result.uri);
+    }
+  };
+
   const submitEventHandler = async () => {
     const localUri = image;
     const filename = localUri.split('/').pop();
@@ -44,6 +59,7 @@ const ModalComponent = ({ isVisible, setVisible, user }) => {
     const type = match ? `image/${match[1]}` : `image`;
 
     const data = new FormData();
+
     data.append('thumbnail', { uri: localUri, name: filename, type });
     data.append('title', eventTitle);
     data.append('description', eventDescription);
@@ -55,11 +71,12 @@ const ModalComponent = ({ isVisible, setVisible, user }) => {
       await fetch('http://192.168.0.7:8080/api/event', {
         method: 'POST',
         body: data,
-        headers: { user },
+        headers: { user: user },
       });
+      loadEvents();
       cancelEventHandler();
     } catch (error) {
-      console.log('data', data);
+      console.log('error', error);
     }
   };
 
@@ -75,21 +92,6 @@ const ModalComponent = ({ isVisible, setVisible, user }) => {
     setEventDescription(null);
     setEventDate(new Date());
     setEventSport(null);
-  };
-
-  const pickImage = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    console.log(result);
-
-    if (!result.cancelled) {
-      setImage(result.uri);
-    }
   };
 
   return (

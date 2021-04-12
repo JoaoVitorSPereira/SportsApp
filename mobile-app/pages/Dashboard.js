@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, ImageBackground, Image } from 'react-native';
 import ActionButton from 'react-native-action-button';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ModalComponent from '../components/ModalComponent';
 import isLoggedIn from '../hooks/isLoggedIn';
@@ -19,6 +18,7 @@ import {
   BoxText,
   Flat,
   RegisterButton,
+  DeleteButton,
 } from '../styles/StyledDashboard';
 const bgImage = require('../assets/background.jpg');
 
@@ -38,7 +38,11 @@ const styles = StyleSheet.create({
   actionButton: {
     fontSize: 20,
     color: 'white',
-    height: 22,
+    height: 20,
+    width: 20,
+  },
+  deleteBtn: {
+    alignItems: 'flex-end',
   },
 });
 
@@ -48,14 +52,17 @@ const Dashboard = ({ navigation }) => {
   const [events, setEvents] = useState([]);
 
   useEffect(() => {
-    loadEvents();
-  }, []);
+    loadEvents('');
+  }, [user]);
 
-  const loadEvents = async () => {
-    const response = await fetch('http://192.168.0.7:8080/api/dashboard', {
-      method: 'GET',
-      headers: { user: user },
-    });
+  const loadEvents = async (query = '') => {
+    const response = await fetch(
+      `http://192.168.0.7:8080/api/dashboard/${query}`,
+      {
+        method: 'GET',
+        headers: { user: user },
+      },
+    );
 
     const jsonResponse = await response.json();
     setEvents(jsonResponse.events);
@@ -94,6 +101,16 @@ const Dashboard = ({ navigation }) => {
                 <BoxDescription>
                   <BoldText>Description:</BoldText> {item.description}
                 </BoxDescription>
+                {item.user === user_id ? (
+                  <DeleteButton onPress={() => console.log('Register')}>
+                    <Icon
+                      name="md-trash"
+                      style={styles.deleteBtn}
+                      size={24}
+                      color="red"
+                    />
+                  </DeleteButton>
+                ) : null}
                 <RegisterButton onPress={() => console.log('Register')}>
                   <ButtonText>Register</ButtonText>
                 </RegisterButton>
@@ -105,17 +122,47 @@ const Dashboard = ({ navigation }) => {
           isVisible={modalVisible}
           setVisible={setModalVisible}
           user={user}
+          loadEvents={loadEvents}
         />
         <PrimaryButton onPress={logoutHandler}>
           <ButtonText>Logout</ButtonText>
         </PrimaryButton>
       </ImageBackground>
-      <ActionButton buttonColor="#007bff" offsetX={4} offsetY={60}>
+      <ActionButton buttonColor="#3498db" offsetX={4} offsetY={60}>
         <ActionButton.Item
           title="New Event"
           onPress={() => setModalVisible(true)}
+          buttonColor="#9b59b6"
         >
           <Icon name="ios-create" style={styles.actionButton} />
+        </ActionButton.Item>
+        <ActionButton.Item
+          title="All Events"
+          onPress={() => loadEvents()}
+          buttonColor="#3498db"
+        >
+          <Icon name="infinite" style={styles.actionButton} />
+        </ActionButton.Item>
+        <ActionButton.Item
+          title="Running"
+          onPress={() => loadEvents('Running')}
+          buttonColor="#1abc9c"
+        >
+          <Icon name="man" style={styles.actionButton} />
+        </ActionButton.Item>
+        <ActionButton.Item
+          title="Cycling"
+          onPress={() => loadEvents('Cycling')}
+          buttonColor="#1abc9c"
+        >
+          <Icon name="ios-bicycle" style={styles.actionButton} />
+        </ActionButton.Item>
+        <ActionButton.Item
+          title="Swimming"
+          onPress={() => loadEvents('Swimming')}
+          buttonColor="#1abc9c"
+        >
+          <Icon name="water" style={styles.actionButton} />
         </ActionButton.Item>
       </ActionButton>
     </Container>
