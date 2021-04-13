@@ -74,6 +74,15 @@ const Dashboard = ({ navigation }) => {
     navigation.navigate('Login');
   };
 
+  const deleteEventHandler = async eventId => {
+    await fetch(`http://192.168.0.7:8080/api/event/${eventId}`, {
+      method: 'DELETE',
+      headers: { user: user },
+    });
+
+    loadEvents();
+  };
+
   return (
     <Container>
       <ImageBackground source={bgImage} style={styles.image}>
@@ -102,11 +111,11 @@ const Dashboard = ({ navigation }) => {
                   <BoldText>Description:</BoldText> {item.description}
                 </BoxDescription>
                 {item.user === user_id ? (
-                  <DeleteButton onPress={() => console.log('Register')}>
+                  <DeleteButton onPress={() => deleteEventHandler(item._id)}>
                     <Icon
                       name="md-trash"
                       style={styles.deleteBtn}
-                      size={24}
+                      size={36}
                       color="red"
                     />
                   </DeleteButton>
